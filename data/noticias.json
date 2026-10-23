@@ -150,13 +150,13 @@
   "seccion": "Videojuegos",
   "autor": "Redactor",
   "fecha": "2026-10-18",
-  "img": "https://media-rockstargames-com.akamaized.net/tina-uploads/posts/ak3ak31a49a221/c8c033070a0bfb2e3ec6ae7ff047ebe8ec551326.jpg",
-  "pie": "Noviembre se mide por la distancia a Grand Theft Auto VI. Imagen: Rockstar Games.",
+  "img": "https://www.engadget.com/img/gallery/switch-2-remake-of-legend-of-zelda-ocarina-of-time-arrives-november-5/l-intro-1788879470.jpg",
+  "pie": "The Legend of Zelda: Ocarina of Time vuelve en forma de remake para Switch 2 el 5 de noviembre. Imagen: Nintendo.",
   "portada": false,
   "cuerpo": "<p>Noviembre tiene un día marcado en rojo, pero no es el único. Según los calendarios de la prensa especializada, el mes mezcla remakes en <b>Switch 2</b>, el nuevo Football Manager y, como colofón, <b>Grand Theft Auto VI</b>. Las fechas pueden cambiar, así que mejor comprobarlas antes de reservar.</p><h3>Del 3 al 6</h3><ul><li><b>3 nov:</b> Zero Parades: For Dead Spies (PS5, Switch 2 y Xbox Series X|S).</li><li><b>5 nov:</b> The Legend of Zelda: Ocarina of Time (remake) y Marvel's Guardians of the Galaxy Encore Edition, ambos en Switch 2.</li><li><b>6 nov:</b> Stellar Blade en Switch 2.</li></ul><h3>Del 10 al 19</h3><ul><li><b>10 nov:</b> Football Manager 27.</li><li><b>12 nov:</b> Metaphor: ReFantazio y Pikmin 4 (edición Switch 2 con la Academia Dandori).</li><li><b>19 nov:</b> Grand Theft Auto VI (PS5 y Xbox Series X|S).</li></ul><p>Según algún calendario, el mes remata con Warhammer 40,000: Dawn of War IV en PC el día 30. La táctica de la industria es clara: huir del 19. Como jugador de Switch 2, me frota las manos con la primera semana, que viene cargada de clásicos.</p>",
-  "fx": 30,
-  "fy": 60,
-  "fz": 1.15
+  "fx": 50,
+  "fy": 50,
+  "fz": 1
  },
  {
   "id": "series-de-noviembre-2026-netflix-hbo-max-disney-y-prime-video",
@@ -165,12 +165,12 @@
   "seccion": "Series",
   "autor": "Redactor",
   "fecha": "2026-10-17",
-  "img": "https://www.tvinsider.com/wp-content/uploads/2024/07/Blade-Runner-1-770x433.jpg",
-  "pie": "Blade Runner 2099 cierra el mes en Prime Video.",
+  "img": "https://www.thewrap.com/wp-content/uploads/2026/08/golded-age.jpg",
+  "pie": "The Gilded Age vuelve el 1 de noviembre con su cuarta temporada en HBO Max. Imagen: HBO.",
   "portada": false,
   "cuerpo": "<p>Si algo sobra en noviembre es oferta. Las plataformas han guardado sus estrenos más cuidados para el penúltimo mes del año, con dramas, thrillers españoles y una de las series de ciencia ficción más esperadas.</p><h3>HBO Max</h3><ul><li><b>1 nov:</b> The Gilded Age, temporada 4 (episodios semanales los domingos).</li><li><b>8 nov:</b> Ciudad de Dios: la lucha no para, temporada 2.</li><li><b>13 nov:</b> Infamia, serie española con Susana Abaitua.</li></ul><h3>Netflix</h3><ul><li><b>5 nov:</b> segundas temporadas de Palomas negras y Al norte del norte.</li><li><b>11 nov:</b> El cuerpo y El claroscuro.</li><li><b>12 nov:</b> La emperatriz, temporada 3.</li><li><b>13 nov:</b> El crimen de Pazos, miniserie sobre el asesinato de Isabel Fuentes (el documental llega el día 6).</li><li><b>19 nov:</b> Los altruistas.</li><li><b>20 nov:</b> Bienvenidos a El Bulli.</li><li><b>26 nov:</b> el anime Fool Night.</li></ul><h3>Disney+ y Prime Video</h3><ul><li><b>4 nov:</b> La emperatriz divorciada (Disney+).</li><li><b>25 nov:</b> Blade Runner 2099, los ocho episodios de golpe (Prime Video).</li></ul><p>Si tuviera que elegir tres, me quedo con Infamia, Ciudad de Dios y Blade Runner 2099. Las fechas son las anunciadas por cada plataforma y pueden variar según el país.</p>",
-  "fx": 70,
-  "fy": 45,
-  "fz": 1.2
+  "fx": 50,
+  "fy": 40,
+  "fz": 1
  }
 ]
