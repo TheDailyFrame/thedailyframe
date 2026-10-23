@@ -33,7 +33,8 @@ img{display:block;width:100%;object-fit:cover;background:#e5e5e5;filter:grayscal
 .pg:nth-child(2){border-left:1px solid var(--line);background:linear-gradient(90deg,rgba(0,0,0,.07),transparent 28px)}
 .pg:nth-child(1){background:linear-gradient(270deg,rgba(0,0,0,.07),transparent 28px)}
 .cards{display:grid;grid-template-columns:1fr;gap:30px;flex:1;align-content:start}
-.card img{aspect-ratio:16/10;margin-bottom:14px}
+.fr{display:block;overflow:hidden;background:#e5e5e5}
+.card img{aspect-ratio:16/10}.card .fr{margin-bottom:14px}
 .card h3{font-weight:800;font-size:26px;letter-spacing:-.035em;line-height:1.1}
 .card p{font-size:15px;color:#3a3a3c;margin-top:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .card:hover h3{text-decoration:underline;text-underline-offset:4px}
@@ -62,7 +63,7 @@ footer{text-align:center;font-size:12px;color:var(--mute);padding-bottom:40px}
  .title{font-size:84px;padding:16px 0 10px}.strip{padding:8px 0}.hero{padding:14px 0 0}.hero img{aspect-ratio:3/1}.hero .t{margin-top:14px;gap:30px}.hero h1,.hero h1.m,.hero h1.l{font-size:30px}.hero p{font-size:14px}.wrap{max-width:none;padding:0 14px}
  .spread,.spread.on{display:grid;break-after:page;border:0;box-shadow:none;break-inside:avoid}
  .pg{min-height:0;background:none!important;padding:0 14px}
- .card img{aspect-ratio:5/2;margin-bottom:8px}.card h3{font-size:18px}.card p{-webkit-line-clamp:2;font-size:12px}.cards{gap:14px}
+ .card img{aspect-ratio:5/2}.card .fr{margin-bottom:8px}.card h3{font-size:18px}.card p{-webkit-line-clamp:2;font-size:12px}.cards{gap:14px}
  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
@@ -85,8 +86,11 @@ const fmt=d=>new Date(d+"T12:00").toLocaleDateString("es-ES",{weekday:"long",day
 const plain=s=>String(s||"").replace(/<[^>]+>/g," ").replace(/&nbsp;/g," ").replace(/!\[[^\]]*\]\([^)]*\)/g,"").replace(/\[([^\]]+)\]\([^)]*\)/g,"$1").replace(/[#>*\-_]/g,"").replace(/\s+/g," ").trim();
 document.title=NAME;
 let spreads=[],cur=0;
+const q=(v,d,a,b)=>{v=parseFloat(v);return isNaN(v)?d:Math.min(b,Math.max(a,v))};
+const fr=(n,alt)=>{const x=q(n.fx,50,0,100),y=q(n.fy,50,0,100),z=q(n.fz,1,1,3);return `<span class="fr"><img src="${esc(n.img)}" alt="${esc(alt||n.pie||n.titulo)}" style="object-position:${x}% ${y}%;transform:scale(${z});transform-origin:${x}% ${y}%" loading="lazy"></span>`};
+
 function card(n){return `<a class="card" href="noticias.html?id=${encodeURIComponent(n.id)}">
- ${n.img?`<img src="${esc(n.img)}" alt="${esc(n.pie||n.titulo)}" loading="lazy">`:""}
+ ${n.img?fr(n):""}
  <div class="k">${esc(n.seccion||"Actualidad")}</div><h3>${esc(n.titulo)}</h3>
  <p>${esc(n.subtitulo||plain(n.cuerpo).slice(0,160))}</p></a>`}
 function show(i){cur=Math.max(0,Math.min(spreads.length-1,i));
@@ -99,7 +103,7 @@ fetch(DATA+"?t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).catch((
  const head=`<div class="strip"><span>Edición Nº ${all.length||0}</span><span>${fmt(top?top.fecha:new Date().toISOString().slice(0,10))}</span><span>Página 1</span></div>
  <h1 class="title">${esc(NAME)}</h1><div class="dbl"></div>`;
  $("#cover").innerHTML=head+(top?`<a class="hero" href="noticias.html?id=${encodeURIComponent(top.id)}">
-  ${top.img?`<img src="${esc(top.img)}" alt="${esc(top.pie||top.titulo)}">`:""}
+  ${top.img?fr(top):""}
   <div class="t"><div><div class="k">${esc(top.seccion||"Portada")}</div><h1 class="${top.titulo.length>90?"l":top.titulo.length>45?"m":""}">${esc(top.titulo)}</h1></div>
   <div><p>${esc(top.subtitulo||plain(top.cuerpo).slice(0,200))}</p><div class="by">Por ${esc(top.autor||"Redacción")}</div></div></div></a>`
   :`<div class="empty">Aún no hay noticias.<br>Publica la primera desde admin.html.</div>`);

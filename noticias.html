@@ -24,6 +24,7 @@ h1.h{font-weight:900;font-size:clamp(38px,8vw,112px);letter-spacing:-.055em;line
 .sub{font-size:clamp(20px,2.6vw,28px);line-height:1.3;color:#222;margin:22px 0 18px;max-width:780px;letter-spacing:-.015em}
 .meta{display:flex;gap:18px;flex-wrap:wrap;font:500 13px var(--f);color:var(--mute);padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:28px}
 .meta b{color:var(--ink)}
+.fr{display:block;overflow:hidden;background:#e5e5e5}
 .photo img{aspect-ratio:21/9}
 .cap{font-size:13px;color:var(--mute);padding:8px 0 0}
 .sheet{margin:34px 0;background:#fff;border:1px solid var(--ink);padding:44px 52px;box-shadow:0 40px 70px -40px rgba(0,0,0,.5);position:relative}
@@ -89,6 +90,8 @@ function clean(h){const d=new DOMParser().parseFromString(String(h).replace(/<(\
   if(c.tagName==="A"){if(!/^(https?:|mailto:)/i.test(c.getAttribute("href")||""))c.removeAttribute("href");c.target="_blank";c.rel="noopener"}
   if(c.tagName==="IMG"&&!/^https?:/i.test(c.getAttribute("src")||""))c.remove();else w(c)})})(d.body);
  return d.body.innerHTML}
+const q=(v,d,a,b)=>{v=parseFloat(v);return isNaN(v)?d:Math.min(b,Math.max(a,v))};
+const fr=(n,alt)=>{const x=q(n.fx,50,0,100),y=q(n.fy,50,0,100),z=q(n.fz,1,1,3);return `<span class="fr"><img src="${esc(n.img)}" alt="${esc(alt||n.pie||n.titulo)}" style="object-position:${x}% ${y}%;transform:scale(${z});transform-origin:${x}% ${y}%" loading="lazy"></span>`};
 const body=c=>/^\s*</.test(c||"")?clean(c):md(c);
 document.getElementById("logo").textContent=NAME;
 const id=new URLSearchParams(location.search).get("id");
@@ -103,7 +106,7 @@ fetch(DATA+"?t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).catch((
   <h1 class="h">${esc(n.titulo)}</h1>
   ${n.subtitulo?`<p class="sub">${esc(n.subtitulo)}</p>`:""}
   <div class="meta"><span>Por <b>${esc(n.autor||"Redacción")}</b></span><span>${fmt(n.fecha)}</span><span>${Math.max(1,Math.round(words/200))} min de lectura</span></div>
-  ${n.img?`<div class="photo"><img src="${esc(n.img)}" alt="${esc(n.pie||n.titulo)}">${n.pie?`<div class="cap">${esc(n.pie)}</div>`:""}</div>`:""}
+  ${n.img?`<div class="photo">${fr(n)}${n.pie?`<div class="cap">${esc(n.pie)}</div>`:""}</div>`:""}
   <div class="sheet"><div class="body">${body(n.cuerpo)}</div><span class="pn l">2</span><span class="pn m">${esc(NAME)}</span><span class="pn r">3</span></div>
   <div class="pager">${prev?`<a href="?id=${encodeURIComponent(prev.id)}"><small>Anterior</small>${esc(prev.titulo)}</a>`:"<span></span>"}${next?`<a href="?id=${encodeURIComponent(next.id)}"><small>Siguiente</small>${esc(next.titulo)}</a>`:"<span></span>"}</div>
  </article>`;
