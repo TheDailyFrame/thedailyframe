@@ -18,6 +18,7 @@ img{display:block;width:100%;object-fit:cover;background:#e5e5e5;filter:grayscal
 .title{font-weight:900;font-size:clamp(30px,10.5vw,140px);letter-spacing:-.06em;line-height:.9;text-align:center;white-space:nowrap;padding:34px 0 22px}
 .dbl{height:8px;border-top:4px solid var(--ink);border-bottom:1px solid var(--ink)}
 .hero{display:block;padding:26px 0 40px}
+.htop{font-weight:900;font-size:clamp(26px,4.2vw,62px);letter-spacing:-.05em;line-height:1.04;margin:10px 0 18px}
 .hero img{aspect-ratio:21/9}
 .hero .t{display:grid;grid-template-columns:1.7fr 1fr;gap:48px;margin-top:26px;align-items:start}
 .hero h1.m{font-size:clamp(28px,4.4vw,60px)}.hero h1.l{font-size:clamp(24px,3.3vw,44px);letter-spacing:-.035em}
@@ -93,7 +94,7 @@ function card(n){return `<a class="card" href="noticias.html?id=${encodeURICompo
  ${n.img?fr(n):""}
  <div class="k">${esc(n.seccion||"Actualidad")}</div><h3>${esc(n.titulo)}</h3>
  <p>${esc(n.subtitulo||plain(n.cuerpo).slice(0,160))}</p></a>`}
-function show(i){cur=Math.max(0,Math.min(spreads.length-1,i));
+function show(i,skip){cur=Math.max(0,Math.min(spreads.length-1,i));if(!skip&&spreads.length>1)history.replaceState(null,"","#p"+cur);
  document.querySelectorAll(".spread").forEach((s,j)=>s.classList.toggle("on",j===cur));
  $("#prev").disabled=cur===0;$("#next").disabled=cur>=spreads.length-1;
  $("#pos").textContent=spreads.length?`Páginas ${2+cur*2}–${3+cur*2}`:"";}
@@ -103,8 +104,11 @@ fetch(DATA+"?t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).catch((
  const head=`<div class="strip"><span>Edición Nº ${all.length||0}</span><span>${fmt(top?top.fecha:new Date().toISOString().slice(0,10))}</span><span>Página 1</span></div>
  <h1 class="title">${esc(NAME)}</h1><div class="dbl"></div>`;
  $("#cover").innerHTML=head+(top?`<a class="hero" href="noticias.html?id=${encodeURIComponent(top.id)}">
+  <div class="k">${esc(top.seccion||"Portada")}</div>
+  <h1 class="htop">${esc(top.titulo)}</h1>
   ${top.img?fr(top):""}
-  <div class="t"><div><div class="k">${esc(top.seccion||"Portada")}</div><h1 class="${top.titulo.length>90?"l":top.titulo.length>45?"m":""}">${esc(top.titulo)}</h1></div>
+  
+  <div class="t"><div>
   <div><p>${esc(top.subtitulo||plain(top.cuerpo).slice(0,200))}</p><div class="by">Por ${esc(top.autor||"Redacción")}</div></div></div></a>`
   :`<div class="empty">Aún no hay noticias.<br>Publica la primera desde admin.html.</div>`);
  const pages=[];for(let i=0;i<rest.length;i+=2)pages.push(rest.slice(i,i+2));
@@ -113,9 +117,10 @@ fetch(DATA+"?t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).catch((
   <div class="num"><span>${2+i*2+j}</span><span>${esc(NAME)}</span></div></div>`).join("")}</section>`).join("");
  $("#foot").textContent=`${NAME} · ${new Date().getFullYear()}`;
  $("#prev").onclick=()=>show(cur-1);$("#next").onclick=()=>show(cur+1);
+addEventListener("hashchange",()=>{const h=parseInt(location.hash.replace("#p",""));if(!isNaN(h))show(h,true)});
  addEventListener("keydown",e=>{if(e.key==="ArrowLeft")show(cur-1);if(e.key==="ArrowRight")show(cur+1)});
  $("#nav").classList.toggle("solo",spreads.length<2);
- show(0);
+ const ip=parseInt(location.hash.replace("#p",""));show(isNaN(ip)?0:ip);
 });
 </script>
 </body>

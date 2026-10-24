@@ -100,6 +100,7 @@ fetch(DATA+"?t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).catch((
  const k=all.findIndex(n=>n.id===id),n=all[k],o=document.getElementById("out");
  if(!n){o.innerHTML='<div class="empty">No encontramos esta noticia.<br><a href="index.html">Volver a la portada</a></div>';return}
  document.title=n.titulo+" · "+NAME;
+const cl=document.createElement("link");cl.rel="canonical";cl.href=location.origin+location.pathname+"?id="+encodeURIComponent(n.id);document.head.appendChild(cl);
  const words=String(n.cuerpo||"").split(/\s+/).length,prev=all[k+1],next=all[k-1];
  o.innerHTML=`<article>
   <div class="k">${esc(n.seccion||"Actualidad")}</div>
