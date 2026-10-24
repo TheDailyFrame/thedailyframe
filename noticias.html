@@ -27,10 +27,9 @@ h1.h{font-weight:900;font-size:clamp(38px,8vw,112px);letter-spacing:-.055em;line
 .fr{display:block;overflow:hidden;background:#e5e5e5}
 .photo img{aspect-ratio:21/9}
 .cap{font-size:13px;color:var(--mute);padding:8px 0 0}
-.sheet{width:min(100%,max(900px,calc((100vh - 70px)*1.45)));margin:34px auto;background:#fff;border:1px solid var(--ink);border-radius:6px;box-shadow:0 12px 32px -22px rgba(0,0,0,.18);position:relative;container-type:inline-size;aspect-ratio:1.45;overflow:hidden}
-.sheet::after{content:"";position:absolute;top:0;bottom:0;left:50%;width:6cqw;transform:translateX(-50%);background:linear-gradient(90deg,transparent,rgba(0,0,0,.035),transparent);pointer-events:none}
+.sheet{width:100%;margin:34px auto;background:#fff;border:1px solid var(--ink);border-radius:6px;box-shadow:0 12px 32px -22px rgba(0,0,0,.18);position:relative;container-type:inline-size;aspect-ratio:1.4;overflow:hidden}
 .in{position:absolute;inset:0;padding:3.2cqw 3.8cqw 4.4cqw}
-.body{height:100%;font-size:var(--fs,1.45cqw);line-height:1.5;column-count:2;column-gap:4.4cqw;column-fill:auto;column-rule:1px solid var(--line);text-align:justify;hyphens:auto;-webkit-hyphens:auto;overflow:hidden}
+.body{height:100%;font-size:var(--fs,1.45cqw);line-height:1.45;column-count:2;column-gap:4.4cqw;column-fill:auto;column-rule:1px solid var(--line);text-align:justify;hyphens:auto;-webkit-hyphens:auto;overflow:hidden}
 .warn{display:none;max-width:1240px;margin:14px auto 0;padding:10px 14px;border:1px solid var(--ink);background:#fff;font:600 13px var(--f)}
 .body p{margin-bottom:1.05em}
 .body>p:first-child::first-letter{float:left;font-weight:900;font-size:4.6em;line-height:.8;padding:.06em .1em 0 0}
@@ -63,7 +62,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset
  .wrap{padding:0;max-width:none}
  .head{break-after:page}article{padding:10px 0 0}
  h1.h{font-size:56px!important}.sub{font-size:20px;margin:12px 0 10px}.meta{margin-bottom:12px}.photo img{aspect-ratio:21/6.5}
- .sheet{max-width:none;width:calc(186mm*1.45);margin:0 auto;border:0;border-radius:0;box-shadow:none;break-inside:avoid}
+ .sheet{max-width:none;width:calc(186mm*1.4);margin:0 auto;border:0;border-radius:0;box-shadow:none;break-inside:avoid}
  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
@@ -100,16 +99,20 @@ function clean(h){const d=new DOMParser().parseFromString(String(h).replace(/<(\
 const q=(v,d,a,b)=>{v=parseFloat(v);return isNaN(v)?d:Math.min(b,Math.max(a,v))};
 const fr=(n,alt)=>{const x=q(n.fx,50,0,100),y=q(n.fy,50,0,100),z=q(n.fz,1,1,3);return `<span class="fr"><img src="${esc(n.img)}" alt="${esc(alt||n.pie||n.titulo)}" style="object-position:${x}% ${y}%;transform:scale(${z});transform-origin:${x}% ${y}%" loading="lazy"></span>`};
 /* La noticia ocupa siempre 2 páginas: la letra se adapta al texto (grande si es corto, menor si es largo). Si no cabe ni al mínimo, avisa (añade #revisar a la URL) */
-function dfFit(b){const MAX=2,MIN=.9,set=v=>b.style.setProperty("--fs",v+"cqw"),over=()=>b.scrollWidth>b.clientWidth+2;
- let s=MAX;b.style.columnFill="auto";set(MAX);
+function dfFit(b,compact=true){const MAX=2,MIN=.9,sh=b.closest(".sheet,.dfs"),set=v=>b.style.setProperty("--fs",v+"cqw"),over=()=>b.scrollWidth>b.clientWidth+2;
+ let s=MAX;sh.style.aspectRatio="";b.style.columnFill="auto";set(MAX);
  if(over()){set(MIN);if(over())return{s:MIN,cut:true};let lo=MIN,hi=MAX;for(let i=0;i<8;i++){const m=(lo+hi)/2;set(m);if(over())hi=m;else lo=m}s=lo;set(s)}
+ else if(compact){/* texto corto: la hoja se acorta para que no quede medio vacía */
+  const R0=1.4;let lo=R0,hi=3;sh.style.aspectRatio=hi;
+  if(over()){for(let i=0;i<8;i++){const m=(lo+hi)/2;sh.style.aspectRatio=m;if(over())hi=m;else lo=m}hi=lo}
+  sh.style.aspectRatio=Math.max(R0,hi/1.08)}
  b.style.columnFill="balance";if(over())b.style.columnFill="auto";return{s,cut:false}}
 function fitH(){const h=document.querySelector("h1.h");if(!h)return;
  if(matchMedia("(max-width:899px)").matches){h.style.fontSize="";return}
  let s=Math.min(innerWidth*.075,128);h.style.fontSize=s+"px";
  while((h.getBoundingClientRect().height>s*.95*3+2||h.getBoundingClientRect().height>innerHeight*.3)&&s>34){s-=2;h.style.fontSize=s+"px"}}
 function fit(){fitH();const b=document.getElementById("bd"),w=document.getElementById("warn");if(!b)return;
- if(matchMedia("(max-width:899px)").matches){b.style.removeProperty("--fs");b.style.columnFill="";w.style.display="none";return}
+ if(matchMedia("(max-width:899px)").matches){b.style.removeProperty("--fs");b.style.columnFill="";b.closest(".sheet").style.aspectRatio="";w.style.display="none";return}
  const r=dfFit(b),small=!r.cut&&r.s<1.25;
  if(r.cut)console.warn("La noticia no cabe en 2 páginas");
  w.textContent=r.cut?"⚠ No cabe en 2 páginas: el final queda recortado. Acorta el texto.":"Ojo: la letra queda pequeña para que quepa en 2 páginas. Conviene acortar el texto.";
