@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>The Daily Frame</title>
+<link rel="manifest" href="site.webmanifest"><meta name="theme-color" content="#fafafa"><link rel="apple-touch-icon" href="icon-web-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,800;0,900;1,400;1,500&display=swap" rel="stylesheet">
@@ -139,5 +140,6 @@ fetch(DATA+"?t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).catch((
  const ip=parseInt(location.hash.replace("#p",""));show(isNaN(ip)?0:ip);
 });
 </script>
+<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{})</script>
 </body>
 </html>
