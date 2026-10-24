@@ -112,6 +112,21 @@ input,textarea,select{font-size:16px}
 .zen section>:not(#tb):not(#ed):not(#wc):not(#st):not(#mt){display:none!important}
 .zen .layout{margin:0;padding:0;max-width:none}.zen .box{border:0;border-radius:0;padding:10px}
 .zen .tb{top:0}.zen #ed{min-height:80vh;max-height:none}
+body.dark{--ink:#f2f2f4;--bg:#000;--mute:#9a9aa2;--line:#2c2c30;color-scheme:dark}
+body.dark header{background:rgba(18,18,20,.8)}
+body.dark button{background:#2a2a2e;color:var(--ink)}body.dark button:hover{background:#38383d}
+body.dark button.p{background:#f2f2f4;color:#000}body.dark button.p:hover{background:#d8d8dc}body.dark button.d{color:#ff6b6b}
+body.dark input,body.dark textarea,body.dark select,body.dark .srch{background:#1c1c1f;color:var(--ink)}
+body.dark input:focus,body.dark textarea:focus,body.dark .srch:focus,body.dark #ed:focus{outline-color:#f2f2f4}
+body.dark .box{background:#161618}
+body.dark .list .it:hover{background:#242427}body.dark .list .it.on{background:#f2f2f4;color:#000}
+body.dark .tb{background:#242427}body.dark .tb button{background:transparent}body.dark .tb button:hover{background:#38383d}body.dark .tb button.p{background:#f2f2f4;color:#000}
+body.dark #ed{background:#1c1c1f;color:var(--ink)}body.dark #ed blockquote{border-color:#f2f2f4}body.dark #ed hr{border-color:#f2f2f4}
+body.dark .mt .bar{background:#2c2c30}body.dark .mt .bar i{background:#f2f2f4}body.dark .mt.warn .bar i{background:#ff6b6b}
+body.dark .mt.warn .hint,body.dark #imh{color:#ff6b6b!important}
+body.dark .fr,body.dark #fw{background:#2c2c30}body.dark #toast{background:#f2f2f4;color:#000}
+body.dark #pvm .sheet{--ink:#000;--mute:#6e6e73;--line:#d2d2d7;color:#000;background:#fff}
+body.dark #pvm button{background:#e8e8ed;color:#000}body.dark #pvm button.p{background:#000;color:#fff}
 </style>
 </head>
 <body>
@@ -125,7 +140,7 @@ input,textarea,select{font-size:16px}
  <details id="adv" style="margin-top:12px"><summary class="hint" style="cursor:pointer">Opciones avanzadas</summary>
   <div class="g2"><div><label>Usuario u organización</label><input id="co"></div><div><label>Repositorio</label><input id="cr"></div>
   <div><label>Rama</label><input id="cb" placeholder="Automática"></div><div><label>Archivo de datos</label><input id="cp"></div></div></details>
- <div class="row" style="margin-top:16px"><button class="p" id="conn">Entrar</button><button id="bout">Cerrar sesión</button><button id="bins" class="hide">Instalar como app</button></div>
+ <div class="row" style="margin-top:16px"><button class="p" id="conn">Entrar</button><button id="bout">Cerrar sesión</button><button id="bins" class="hide">Instalar como app</button><button id="bdark">Modo oscuro</button></div>
 </div>
 
 <div class="layout hide" id="app">
@@ -307,6 +322,10 @@ $("#bview").onclick=()=>{if(cur>=0)open("noticias.html?id="+items[cur].id+"#revi
 $("#bdel").onclick=async()=>{if(cur<0||!confirm("¿Eliminar esta noticia de forma definitiva?"))return;const t=items[cur].titulo;items.splice(cur,1);
  try{await commit("Eliminada: "+t);clearDraft();toast("Eliminada");list();open_(items.length?0:-1)}catch(e){toast(e.message)}};
 $("#bout").onclick=()=>{localStorage.removeItem("gaceta");location.reload()};
+const dk=matchMedia("(prefers-color-scheme:dark)");
+function theme(){const t=localStorage.gtheme,d=t?t==="dark":dk.matches;document.body.classList.toggle("dark",d);$("#bdark").textContent=d?"☀ Modo claro":"🌙 Modo oscuro"}
+$("#bdark").onclick=()=>{localStorage.gtheme=document.body.classList.contains("dark")?"light":"dark";theme()};
+dk.addEventListener("change",()=>{if(!localStorage.gtheme)theme()});theme();
 let ip;addEventListener("beforeinstallprompt",e=>{e.preventDefault();ip=e;$("#bins").classList.remove("hide")});$("#bins").onclick=()=>{if(ip){ip.prompt();ip=null;$("#bins").classList.add("hide")}};
 if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 $("#bcfg").onclick=()=>$("#cfg").classList.toggle("hide");
