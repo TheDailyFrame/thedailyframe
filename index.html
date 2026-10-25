@@ -33,6 +33,7 @@ img{display:block;width:100%;object-fit:cover;background:#e5e5e5;filter:grayscal
 footer a{text-decoration:underline;text-underline-offset:3px}
 .tabs button{font:600 14px var(--f);letter-spacing:-.01em;border:0;border-bottom:2px solid transparent;background:none;color:var(--mute);padding:4px 0;cursor:pointer}
 .tabs button:hover{color:var(--ink)}.tabs button.on{color:var(--ink);border-bottom-color:var(--ink)}
+.srch{display:flex;gap:18px;align-items:center}.mes{width:auto;font-weight:600;cursor:pointer;-webkit-appearance:menulist;appearance:auto}
 .empty{padding:90px 0;text-align:center;color:var(--mute)}
 .sep{display:flex;align-items:center;gap:14px;margin:4px 0 0}
 .sep i{flex:1;height:7px;background:repeating-linear-gradient(135deg,var(--ink) 0 1px,transparent 1px 4px);opacity:.5}
@@ -68,7 +69,7 @@ footer{text-align:center;font-size:12px;color:var(--mute);padding-bottom:40px}
  .nav .pn,.nav span{display:none}.num{display:none}
  .strip{font-size:11px}.strip span{white-space:nowrap}.strip .motto,.strip span:last-child{display:none}
  .meta{flex-wrap:wrap}
- .tools{flex-direction:column;align-items:stretch;gap:12px}.q{width:100%}
+ .tools{flex-direction:column;align-items:stretch;gap:12px}.q{width:100%}.srch{flex-direction:column;align-items:stretch;gap:12px}
  .tabs{flex-wrap:nowrap;overflow-x:auto;gap:20px;scrollbar-width:none}.tabs button{white-space:nowrap}
 }
 @media print{
@@ -104,8 +105,8 @@ const fmtS=d=>new Date(d+"T12:00").toLocaleDateString("es-ES",{day:"numeric",mon
 const roman=n=>{n=Math.floor(n);if(n<1||n>3999)return String(n);let r="";[[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],[50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]].forEach(([v,s])=>{while(n>=v){r+=s;n-=v}});return r};
 const plain=s=>String(s||"").replace(/<[^>]+>/g," ").replace(/&nbsp;/g," ").replace(/!\[[^\]]*\]\([^)]*\)/g,"").replace(/\[([^\]]+)\]\([^)]*\)/g,"$1").replace(/[#>*\-_]/g,"").replace(/\s+/g," ").trim();
 document.title=NAME;
-let spreads=[],cur=0,sec="";
-const hashOf=()=>(sec?encodeURIComponent(sec)+".":"")+"p"+cur;
+let spreads=[],cur=0,sec="",mes="";
+const hashOf=()=>(sec?encodeURIComponent(sec)+".":"")+(mes||"todo")+".p"+cur;
 const q=(v,d,a,b)=>{v=parseFloat(v);return isNaN(v)?d:Math.min(b,Math.max(a,v))};
 const fr=(n,alt)=>{const x=q(n.fx,50,0,100),y=q(n.fy,50,0,100),z=q(n.fz,1,1,3);return `<span class="fr"><img src="${esc(n.img)}" alt="${esc(alt||n.pie||n.titulo)}" style="object-position:${x}% ${y}%;transform:scale(${z});transform-origin:${x}% ${y}%" loading="lazy"></span>`};
 
@@ -113,7 +114,7 @@ function card(n,pg){return `<a class="card" href="noticias.html?id=${encodeURICo
  ${n.img?fr(n):""}
  <div class="kr"><div class="k">${esc(n.seccion||"Actualidad")}</div><span class="pr">Pág. ${pg}</span></div><h3>${esc(n.titulo)}</h3>
  <p>${esc(n.subtitulo||plain(n.cuerpo).slice(0,160))}</p></a>`}
-function show(i,skip){cur=Math.max(0,Math.min(spreads.length-1,i));if(!skip&&(spreads.length>1||sec))history.replaceState(null,"","#"+hashOf());
+function show(i,skip){cur=Math.max(0,Math.min(spreads.length-1,i));if(!skip&&(spreads.length>1||sec||mes))history.replaceState(null,"","#"+hashOf());
  document.querySelectorAll(".spread").forEach((s,j)=>s.classList.toggle("on",j===cur));
  $("#prev").disabled=cur===0;$("#next").disabled=cur>=spreads.length-1;
  $("#pos").textContent=spreads.length?`Páginas ${2+cur*2}–${3+cur*2}`:"";}
@@ -136,7 +137,7 @@ fetch(DATA+"?t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).catch((
   <div class="cap"><p>${esc(top.subtitulo||plain(top.cuerpo).slice(0,200))}</p>
   <div class="meta"><span>Por ${esc(top.autor||"Redacción")}</span><span>${fmtS(fecha)} · ${esc(top.seccion||"Portada")}</span></div></div></a>`
   :`<div class="empty">Aún no hay noticias.<br>Publica la primera desde admin.html.</div>`)
-  +(rest.length?`<div class="sep"><i></i><span>Páginas interiores</span><i></i></div><div class="tools"><div class="tabs" id="tabs"></div><input class="q" id="q" type="search" placeholder="Buscar en el periódico…" aria-label="Buscar" autocomplete="off"></div>`:"");
+  +(rest.length?`<div class="sep"><i></i><span>Páginas interiores</span><i></i></div><div class="tools"><div class="tabs" id="tabs"></div><div class="srch"><select class="q mes" id="mes" aria-label="Mes"></select><input class="q" id="q" type="search" placeholder="Buscar en el periódico…" aria-label="Buscar" autocomplete="off"></div></div>`:"");
  fit();addEventListener("resize",fit);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
  const SEC=n=>n.seccion||"Actualidad";
  const norm=t=>String(t||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
@@ -144,10 +145,17 @@ fetch(DATA+"?t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).catch((
  let qs="";const qi=$("#q");if(qi){let h;qi.oninput=()=>{clearTimeout(h);h=setTimeout(()=>{qs=qi.value.trim();build();show(0)},150)}}
  const counts={};rest.forEach(n=>counts[SEC(n)]=(counts[SEC(n)]||0)+1);
  const names=Object.keys(counts).sort((a,b)=>counts[b]-counts[a]||a.localeCompare(b,"es"));
+ const months=[...new Set(rest.map(n=>(n.fecha||"").slice(0,7)).filter(Boolean))],mcount={};
+ rest.forEach(n=>{const k=(n.fecha||"").slice(0,7);mcount[k]=(mcount[k]||0)+1});
+ const ms=$("#mes");
+ if(ms){if(months.length>1){
+  ms.innerHTML=`<option value="">Todos los meses</option>`+months.map(m=>{const t=new Date(m+"-01T12:00").toLocaleDateString("es-ES",{month:"long",year:"numeric"});return `<option value="${m}">${t[0].toUpperCase()+t.slice(1)} (${mcount[m]})</option>`}).join("");
+  ms.onchange=()=>{mes=ms.value;build();show(0)};
+ }else ms.remove()}
  const tabs=$("#tabs");
  function paint(){if(tabs)tabs.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.s===sec))}
  function build(){
-  const nq=norm(qs);let list=qs?all.filter(n=>hay(n).includes(nq)):rest;if(sec)list=list.filter(n=>SEC(n)===sec);
+  const nq=norm(qs);let list=qs?all.filter(n=>hay(n).includes(nq)):rest;if(sec)list=list.filter(n=>SEC(n)===sec);if(mes&&!qs)list=list.filter(n=>(n.fecha||"").startsWith(mes));
   const pages=[];for(let i=0;i<list.length;i+=4)pages.push(list.slice(i,i+4));
   spreads=[];for(let i=0;i<pages.length;i+=2)spreads.push(pages.slice(i,i+2));
   if(!list.length){$("#book").innerHTML=`<div class="empty">${qs?"No hay noticias que coincidan con «"+esc(qs)+"».":"Aún no hay noticias."}</div>`;$("#nav").classList.add("solo");return}
@@ -161,12 +169,15 @@ fetch(DATA+"?t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).catch((
    tabs.onclick=e=>{const b=e.target.closest("button");if(!b)return;sec=b.dataset.s;paint();build();show(0)};
   }else tabs.remove();
  }
- const parse=()=>{const m=location.hash.match(/^#(?:(.+)\.)?p(\d+)$/);let s="";if(m&&m[1]){try{s=decodeURIComponent(m[1])}catch(e){}}return{s:names.includes(s)?s:"",p:m?parseInt(m[2]):0}};
+ const parse=()=>{const m=location.hash.match(/^#((?:[^.]+\.)*)p(\d+)$/);let s="",t=null;
+  if(m&&m[1])m[1].split(".").filter(Boolean).forEach(x=>{try{x=decodeURIComponent(x)}catch(e){}if(x==="todo"||/^\d{4}-\d{2}$/.test(x))t=x==="todo"?"":x;else s=x});
+  const d=months.length>1?months[0]:"";
+  return{s:names.includes(s)?s:"",m:(t!==null&&(t===""||months.includes(t)))?t:d,p:m?parseInt(m[2]):0}};
  $("#foot").innerHTML=`${esc(NAME)} · ${new Date().getFullYear()} · <a href="legal.html">Aviso legal y cookies</a> · <a href="rss.xml">RSS</a>`;
  $("#prev").onclick=()=>show(cur-1);$("#next").onclick=()=>show(cur+1);
- addEventListener("hashchange",()=>{if(!/^#(.+\.)?p\d+$/.test(location.hash))return;const h=parse();if(h.s!==sec){sec=h.s;paint();build()}show(h.p,true)});
+ addEventListener("hashchange",()=>{if(!/^#(.+\.)?p\d+$/.test(location.hash))return;const h=parse();if(h.s!==sec||h.m!==mes){sec=h.s;mes=h.m;if(ms)ms.value=mes;paint();build()}show(h.p,true)});
  addEventListener("keydown",e=>{if(e.key==="ArrowLeft")show(cur-1);if(e.key==="ArrowRight")show(cur+1)});
- const h0=parse();sec=h0.s;paint();build();show(h0.p);
+ const h0=parse();sec=h0.s;mes=h0.m;if(ms)ms.value=mes;paint();build();show(h0.p);
 });
 </script>
 </body>
