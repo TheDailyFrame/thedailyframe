@@ -122,7 +122,8 @@ fetch(DATA+"?t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).catch((
  all.sort((a,b)=>(b.fecha||"").localeCompare(a.fecha||""));
  const top=all.find(n=>n.portada)||all[0], rest=all.filter(n=>n!==top);
  const today=new Date().toISOString().slice(0,10), fecha=top&&top.fecha?top.fecha:today;
- const head=`<div class="strip"><span>${fmt(fecha)}</span><span class="motto">${esc(MOTTO)}</span><span>Edición ${roman(new Set(all.map(n=>n.fecha)).size)}</span></div>
+ const last=all.length&&all[0].fecha?all[0].fecha:fecha, nuevas=all.filter(n=>n.fecha===last).length;
+ const head=`<div class="strip"><span>${fmt(last)}</span><span class="motto">${esc(MOTTO)}</span><span>${nuevas?nuevas+(nuevas===1?" noticia nueva":" noticias nuevas"):""}</span></div>
  <h1 class="title">${esc(NAME)}</h1><div class="dbl"></div>`;
  $("#cover").innerHTML=head+(top?`<a class="hero" href="noticias.html?id=${encodeURIComponent(top.id)}">
   <h1 class="htop" id="htop">${esc(top.titulo)}</h1>
