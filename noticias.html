@@ -31,7 +31,7 @@ h1.h{font-weight:900;font-size:clamp(38px,8vw,112px);letter-spacing:-.055em;line
 .in{position:absolute;inset:0;padding:3.2cqw 3.8cqw 4.4cqw}
 .body{height:100%;font-size:var(--fs,1.45cqw);line-height:1.45;column-count:2;column-gap:4.4cqw;column-fill:auto;column-rule:1px solid var(--line);text-align:justify;hyphens:auto;-webkit-hyphens:auto;overflow:hidden}
 .warn{display:none;max-width:1240px;margin:14px auto 0;padding:10px 14px;border:1px solid var(--ink);background:#fff;font:600 13px var(--f)}
-.short .body{text-align:left}.short .body p{break-inside:avoid}
+.short .body{text-align:left}.body p{orphans:2;widows:2}
 .body p{margin-bottom:1.05em}
 .body>p:first-child::first-letter{float:left;font-weight:900;font-size:4.6em;line-height:.8;padding:.06em .1em 0 0}
 .body h2{font-weight:800;font-size:1.45em;letter-spacing:-.03em;line-height:1.15;margin:1.2em 0 .5em;break-after:avoid;text-align:left}
@@ -96,6 +96,8 @@ function clean(h){const d=new DOMParser().parseFromString(String(h).replace(/<(\
   [...c.attributes].forEach(a=>{const k=a.name;if(!(c.tagName==="A"&&k==="href"||c.tagName==="IMG"&&(k==="src"||k==="alt")))c.removeAttribute(k)});
   if(c.tagName==="A"){if(!/^(https?:|mailto:)/i.test(c.getAttribute("href")||""))c.removeAttribute("href");c.target="_blank";c.rel="noopener"}
   if(c.tagName==="IMG"&&!/^https?:/i.test(c.getAttribute("src")||""))c.remove();else w(c)})})(d.body);
+ /* Elimina párrafos que solo contienen espacios, &nbsp; o <br> sueltos (el editor a veces los genera) */
+ d.body.querySelectorAll("p,h2,h3").forEach(p=>{if(!p.textContent.replace(/[\s\u00a0]/g,"")&&!p.querySelector("img"))p.remove()});
  return d.body.innerHTML}
 const q=(v,d,a,b)=>{v=parseFloat(v);return isNaN(v)?d:Math.min(b,Math.max(a,v))};
 const fr=(n,alt)=>{const x=q(n.fx,50,0,100),y=q(n.fy,50,0,100),z=q(n.fz,1,1,3);return `<span class="fr"><img src="${esc(n.img)}" alt="${esc(alt||n.pie||n.titulo)}" style="object-position:${x}% ${y}%;transform:scale(${z});transform-origin:${x}% ${y}%" loading="lazy"></span>`};
