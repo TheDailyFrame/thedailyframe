@@ -87,16 +87,29 @@ label{display:block;font:600 12px var(--f);color:var(--mute);margin:12px 0 5px}
 #toast.on{transform:translateX(-50%)}
 .hide{display:none!important}
 @media(max-width:999px){.layout{grid-template-columns:1fr}.ed,.g2{grid-template-columns:1fr}.tb{top:56px}}
+#t{font-size:22px;font-weight:700;padding:12px 14px}
+.det{margin-top:18px;border-top:1px solid var(--line);padding-top:6px}
+.det summary{font:600 14px var(--f);cursor:pointer;padding:8px 0}
+.mo{display:none}
+#sidebg{display:none}
+#sidebg.on{display:block;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:39}
+@media(max-width:999px){
+ .mo{display:inline-block}
+ #side{position:fixed;top:0;bottom:0;left:0;width:min(86vw,340px);overflow:auto;z-index:40;border-radius:0 18px 18px 0;transform:translateX(-105%);transition:transform .25s;margin:0}
+ #side.open{transform:none}
+ .tb .adv{display:none}.tb.open .adv{display:inline-block}
+ .acts{position:sticky;bottom:0;background:#fff;padding:10px 0 calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);z-index:4}
+ #ed{min-height:300px}
+}
 </style>
 </head>
 <body>
-<header><b>Panel de redacción</b><div class="row"><button id="bcfg">Conexión</button><button id="bregen" class="hide" title="Vuelve a crear el RSS, el mapa del sitio y los enlaces para compartir de todas las noticias">Regenerar RSS y enlaces</button><button id="bnew" class="hide">Nueva noticia</button><button id="bsave" class="p hide">Publicar</button></div></header>
+<header><b>Panel de redacción</b><div class="row"><button id="bside" class="mo">Noticias</button><button id="bcfg">Ajustes</button><button id="bregen" class="hide" title="Vuelve a crear el RSS, el mapa del sitio y los enlaces para compartir de todas las noticias">Regenerar RSS y enlaces</button><button id="bnew" class="hide">Nueva noticia</button><button id="bsave" class="p hide">Publicar</button></div></header>
 
 <div id="cfg" class="box hide">
- <h2 style="letter-spacing:-.03em">Iniciar sesión</h2>
+ <h2 style="letter-spacing:-.03em">Ajustes</h2>
  <p class="hint" id="rp"></p>
  <label>Token de acceso de GitHub</label><input id="ck" type="password" autocomplete="off" placeholder="github_pat_…">
- <p class="hint">Se guarda solo en este navegador: lo pedirás una única vez.</p>
  <details id="adv" style="margin-top:12px"><summary class="hint" style="cursor:pointer">Opciones avanzadas</summary>
   <div class="g2"><div><label>Usuario u organización</label><input id="co"></div><div><label>Repositorio</label><input id="cr"></div>
   <div><label>Rama</label><input id="cb" placeholder="Automática"></div><div><label>Archivo de datos</label><input id="cp"></div></div></details>
@@ -104,16 +117,14 @@ label{display:block;font:600 12px var(--f);color:var(--mute);margin:12px 0 5px}
 </div>
 
 <div class="layout hide" id="app">
- <aside class="box list" style="align-self:start"><div class="row" style="justify-content:space-between;margin-bottom:8px"><b>Noticias</b><span class="hint" id="cnt"></span></div>
+ <aside class="box list" id="side" style="align-self:start"><div class="row" style="justify-content:space-between;margin-bottom:8px"><b>Noticias</b><span class="hint" id="cnt"></span></div>
 <input class="srch" id="srch" placeholder="🔍 Buscar…" autocomplete="off">
 <div id="lst"></div></aside>
  <section class="box">
   <label style="margin-top:0">Titular</label><input id="t" placeholder="Un titular claro y fuerte"><div class="hint" id="tc"></div>
-  <label>Subtítulo</label><input id="s" placeholder="Una frase que amplíe el titular"><div class="hint" id="sc"></div>
-  <div class="g2"><div><label>Sección</label><input id="sec" placeholder="Política, Cultura, Deportes…"></div><div><label>Autor</label><input id="au"></div>
-  <div><label>Fecha</label><input id="fe" type="date"></div><div><label>Portada</label><select id="po"><option value="0">Página interior</option><option value="1">Noticia de portada</option></select></div></div>
-  <label>Sobre el autor (opcional): una línea que aparece al final de la noticia</label><input id="bio" placeholder="Ej.: Redactor de cine y series. Escribe sobre estrenos desde 2018.">
-  <label>URL de la fotografía principal (se muestra siempre en blanco y negro)</label><input id="im" placeholder="https://…">
+  <label>Fotografía principal</label>
+  <div class="row"><button type="button" id="bfoto">📷 Subir foto desde el dispositivo</button><input type="file" id="fileimg" accept="image/*" class="hide"></div>
+  <label>…o pega la URL de una foto (se muestra siempre en blanco y negro)</label><input id="im" placeholder="https://…">
   <div id="fbox" class="hide">
    <div class="fgrid">
     <div><label>Encuadre: pulsa o arrastra sobre la foto para marcar lo importante</label><div id="fw"><img id="fs" alt=""><i id="fd"></i></div>
@@ -121,19 +132,27 @@ label{display:block;font:600 12px var(--f);color:var(--mute);margin:12px 0 5px}
     <div><label>Así se verá en portada y en el artículo (21:9)</label><span class="fr"><img id="fp1" alt="" style="aspect-ratio:21/9"></span>
      <label>Así se verá en las páginas interiores (16:10)</label><span class="fr"><img id="fp2" alt="" style="aspect-ratio:16/10"></span></div>
    </div><input id="fx" type="hidden" value="50"><input id="fy" type="hidden" value="50">
-  </div>
   <label>Pie de foto</label><input id="pie">
+  </div>
+  <input type="file" id="bodyimg" accept="image/*" class="hide">
   <div class="tb" id="tb">
-   <button data-c="formatBlock" data-v="<p>">Párrafo</button><button data-c="formatBlock" data-v="<h2>">Subtítulo</button><button data-c="formatBlock" data-v="<blockquote>">Cita</button><span class="sep"></span>
-   <button data-c="bold" title="Negrita (Ctrl+B)"><b>N</b></button><button data-c="italic" title="Cursiva (Ctrl+I)"><i>K</i></button><button data-c="underline" title="Subrayado (Ctrl+U)"><u>S</u></button><span class="sep"></span>
-   <button data-c="insertUnorderedList">Lista</button><button data-c="insertOrderedList">Numerada</button><span class="sep"></span>
-   <button data-c="link" title="Enlace (Ctrl+K)">Enlace</button><button data-c="unlink">Quitar enlace</button><button data-c="img">Foto</button><button data-c="insertHorizontalRule">Separador</button><span class="sep"></span>
-   <button data-c="undo">Deshacer</button><button data-c="redo">Rehacer</button><button data-c="removeFormat">Limpiar</button><button data-c="prev" class="p">Vista previa</button>
+   <button data-c="formatBlock" data-v="<h2>">Subtítulo</button><button data-c="formatBlock" data-v="<blockquote>">Cita</button><span class="sep"></span>
+   <button data-c="bold" title="Negrita (Ctrl+B)"><b>N</b></button><button data-c="italic" title="Cursiva (Ctrl+I)"><i>K</i></button><button class="adv" data-c="underline" title="Subrayado (Ctrl+U)"><u>S</u></button><span class="sep"></span>
+   <button data-c="insertUnorderedList">Lista</button><button class="adv" data-c="insertOrderedList">Numerada</button><span class="sep"></span>
+   <button data-c="link" title="Enlace (Ctrl+K)">Enlace</button><button class="adv" data-c="unlink">Quitar enlace</button><button data-c="img">Foto</button><button class="adv" data-c="insertHorizontalRule">Separador</button><span class="sep"></span>
+   <button class="adv" data-c="formatBlock" data-v="<p>">Párrafo</button><button class="adv" data-c="undo">Deshacer</button><button class="adv" data-c="redo">Rehacer</button><button class="adv" data-c="removeFormat">Limpiar</button><button data-c="prev" class="p">Vista previa</button><button type="button" id="tbm" class="mo">Más…</button>
   </div>
   <div id="ed" contenteditable="true" spellcheck="true" data-ph="Escribe aquí tu noticia (corta: unas 500 palabras caben con letra normal). Atajos: «## » + espacio = subtítulo, «> » = cita, «- » = lista."></div><div class="hint" id="wc"></div><div class="mt hide" id="mt"><div class="bar"><i id="mb"></i></div><div class="hint" id="mtx"></div></div><div id="av"></div>
-  <div class="row" style="margin-top:18px"><button class="p" id="bsave2">Publicar cambios</button><button id="bview">Ver en la web</button><button class="d" id="bdel">Eliminar</button></div>
+  <details class="det" id="det"><summary>Detalles: subtítulo, sección, autor, fecha y portada</summary>
+   <label style="margin-top:6px">Subtítulo (opcional)</label><input id="s" placeholder="Una frase que amplíe el titular"><div class="hint" id="sc"></div>
+   <div class="g2"><div><label>Sección</label><input id="sec" list="secs" placeholder="Política, Cultura, Deportes…"><datalist id="secs"></datalist></div><div><label>Autor</label><input id="au"></div>
+   <div><label>Fecha</label><input id="fe" type="date"></div><div><label>Portada</label><select id="po"><option value="0">Página interior</option><option value="1">Noticia de portada</option></select></div></div>
+   <label>Sobre el autor (opcional): una línea que aparece al final de la noticia</label><input id="bio" placeholder="Ej.: Redactor de cine y series. Escribe sobre estrenos desde 2018.">
+  </details>
+  <div class="row acts" style="margin-top:18px"><button class="p" id="bsave2">Publicar cambios</button><button id="bview">Ver en la web</button><button class="d" id="bdel">Eliminar</button></div>
  </section>
 </div>
+<div id="sidebg"></div>
 <div id="pvm" class="hide"></div>
 <div id="mz" aria-hidden="true"></div>
 <div id="toast"></div>
@@ -255,7 +274,7 @@ async function chk(){const c=C(),h={Authorization:"Bearer "+c.k,Accept:"applicat
  const b=await fetch(u+"/branches/"+encodeURIComponent(c.b),{headers:h});
  if(!b.ok)throw new Error(`La rama «${c.b}» no existe en el repositorio. Prueba con main o master`)}
 async function load(){await chk();const j=await api("GET");items=j?JSON.parse(dec(j.content)):[];sha=j?j.sha:null;
- items.sort((a,b)=>(b.fecha||"").localeCompare(a.fecha||""));$("#cfg").classList.add("hide");$("#app").classList.remove("hide");$("#bnew").classList.remove("hide");$("#bregen").classList.remove("hide");$("#bsave").classList.remove("hide");list();const dr=readDraft();open_(items.length?0:-1);
+ items.sort((a,b)=>(b.fecha||"").localeCompare(a.fecha||""));secs();$("#cfg").classList.add("hide");$("#app").classList.remove("hide");$("#bnew").classList.remove("hide");$("#bregen").classList.remove("hide");$("#bsave").classList.remove("hide");list();const dr=readDraft();open_(items.length?0:-1);
  if(dr&&(!dr.id||items.some(x=>x.id===dr.id))){if(confirm("Hay un borrador sin publicar"+(dr.n.titulo?" de «"+dr.n.titulo+"»":"")+". ¿Quieres recuperarlo?"))applyDraft(dr);else clearDraft()}else if(dr)clearDraft()}
 async function commit(msg){const c=C();const j=await api("PUT",{message:msg,content:enc(JSON.stringify(items,null,1)),branch:c.b,sha:sha||undefined});sha=j.content.sha;dirty=false}
 function list(q){q=(q||$("#srch")?.value||"").toLowerCase().trim();const vis=q?items.filter(n=>(n.titulo||"").toLowerCase().includes(q)||(n.seccion||"").toLowerCase().includes(q)):items;const t=items.length;$("#cnt").textContent=t+(t===1?" entrada":" entradas");if(!vis.length){$("#lst").innerHTML='<p class="hint">Sin resultados.</p>';return}
@@ -307,10 +326,9 @@ function preview(){const n=read(),p=$("#pvm");
  p.classList.remove("hide");$("#pvx").onclick=()=>p.classList.add("hide");
  const f=dfFit($("#pvb"));if(f.cut)$("#pvh").textContent="⚠ No cabe en 2 páginas: el final se recortaría. Acorta el texto.";else if(f.s<1.25)$("#pvh").textContent="⚠ Cabe, pero con letra pequeña. Mejor acortar un poco."}
 $("#tb").addEventListener("mousedown",e=>{if(e.target.closest("button"))e.preventDefault()});
-$("#tb").onclick=e=>{const b=e.target.closest("button");if(!b)return;const c=b.dataset.c,x=document.execCommand.bind(document);$("#ed").focus();
+$("#tb").onclick=e=>{const b=e.target.closest("button");if(!b||!b.dataset.c)return;const c=b.dataset.c,x=document.execCommand.bind(document);if(c==="img"){const s2=getSelection();savedRg=s2.rangeCount?s2.getRangeAt(0).cloneRange():null;$("#bodyimg").click();return}$("#ed").focus();
  if(c==="link"){const u=ask("Dirección del enlace (https://…)");if(u)getSelection().isCollapsed?x("insertHTML",false,`<a href="${esc(u)}">${esc(u)}</a>`):x("createLink",false,u)}
- else if(c==="img"){const u=ask("URL de la fotografía");if(u)x("insertImage",false,u)}
- else if(c==="prev")preview();
+  else if(c==="prev")preview();
  else x(c,false,b.dataset.v||null);upd()};
 $("#ed").addEventListener("input",upd);
 $("#ed").addEventListener("input",e=>{if(e.inputType!=="insertText"||e.data!==" ")return;const sel=getSelection(),n=sel.anchorNode;if(!n||n.nodeType!==3)return;
@@ -325,14 +343,39 @@ $("#ed").addEventListener("paste",e=>{e.preventDefault();const h=e.clipboardData
 addEventListener("keydown",e=>{const m=e.ctrlKey||e.metaKey;if(m&&e.key==="s"){e.preventDefault();save()}if(m&&e.key==="k"){e.preventDefault();$("#tb [data-c=link]").click()}if(e.key==="Escape")$("#pvm").classList.add("hide")});
 document.querySelectorAll("#app input,#app textarea,#app select").forEach(x=>x.addEventListener("input",upd));
 $("#srch")?.addEventListener("input",e=>list(e.target.value));
-$("#lst").onclick=e=>{const i=e.target.closest(".it")?.dataset.i;if(i!=null)open_(+i)};
+$("#lst").onclick=e=>{const i=e.target.closest(".it")?.dataset.i;if(i!=null){open_(+i);closeSide()}};
+/* ===== Subida de fotos al repositorio (img/) ===== */
+let savedRg=null;
+const SECS_BASE=["Política","Cultura","Deportes","Economía","Sociedad","Internacional","Tecnología","Cine y series","Música","Opinión"];
+function secs(){const all=[...new Set([...SECS_BASE,...items.map(n=>n.seccion).filter(Boolean)])];$("#secs").innerHTML=all.map(x=>`<option value="${esc(x)}">`).join("")}
+function reducir(file,max=1600){return new Promise((res,rej)=>{const u=URL.createObjectURL(file),img=new Image();
+ img.onload=()=>{const k=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight)),c=document.createElement("canvas");
+  c.width=Math.round(img.naturalWidth*k);c.height=Math.round(img.naturalHeight*k);c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+  URL.revokeObjectURL(u);c.toBlob(b=>b?res(b):rej(new Error("No se pudo preparar la foto")),"image/jpeg",.85)};
+ img.onerror=()=>{URL.revokeObjectURL(u);rej(new Error("No se pudo leer la imagen"))};img.src=u})}
+function b64(buf){let t="",u=new Uint8Array(buf);for(let i=0;i<u.length;i+=32768)t+=String.fromCharCode.apply(null,u.subarray(i,i+32768));return btoa(t)}
+async function subirFoto(file){const c=C();if(!c.k||!c.o)throw new Error("Inicia sesión en Ajustes antes de subir fotos");
+ const blob=await reducir(file),buf=await blob.arrayBuffer();
+ const name="f"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)+".jpg",path="img/"+name;
+ await gh("contents/"+path,"PUT",{message:"Foto: "+name,content:b64(buf),branch:c.b});
+ return BASE()+path}
+$("#bfoto").onclick=()=>$("#fileimg").click();
+$("#fileimg").onchange=async e=>{const f=e.target.files[0];e.target.value="";if(!f)return;toast("Subiendo foto…");
+ try{$("#im").value=await subirFoto(f);upd();toast("Foto subida")}catch(err){toast(err.message)}};
+$("#bodyimg").onchange=async e=>{const f=e.target.files[0];e.target.value="";if(!f)return;toast("Subiendo foto…");
+ try{const u=await subirFoto(f);$("#ed").focus();if(savedRg){const s2=getSelection();s2.removeAllRanges();s2.addRange(savedRg)}
+  document.execCommand("insertImage",false,u);upd();toast("Foto insertada")}catch(err){toast(err.message)}};
+$("#tbm").onclick=()=>$("#tb").classList.toggle("open");
+function closeSide(){$("#side").classList.remove("open");$("#sidebg").classList.remove("on")}
+$("#bside").onclick=()=>{$("#side").classList.add("open");$("#sidebg").classList.add("on")};
+$("#sidebg").onclick=closeSide;
 $("#bnew").onclick=()=>open_(-1);$("#bregen").onclick=regen;$("#bsave").onclick=$("#bsave2").onclick=save;
 $("#bview").onclick=()=>{if(cur>=0)open("noticias.html?id="+items[cur].id+"#revisar","_blank");else toast("Publica la noticia primero")};
 $("#bdel").onclick=async()=>{if(cur<0||!confirm("¿Eliminar esta noticia de forma definitiva?"))return;const t=items[cur].titulo,old=items[cur];items.splice(cur,1);
  try{await commit("Eliminada: "+t);clearDraft();toast("Eliminada");list();open_(items.length?0:-1);extras(old,true).catch(()=>{})}catch(e){toast(e.message)}};
 $("#bout").onclick=()=>{localStorage.removeItem("gaceta");location.reload()};
 $("#bcfg").onclick=()=>$("#cfg").classList.toggle("hide");
-$("#conn").onclick=async()=>{localStorage.gaceta=JSON.stringify({o:$("#co").value.trim(),r:$("#cr").value.trim(),b:$("#cb").value.trim(),p:$("#cp").value.trim()||"data/noticias.json",k:$("#ck").value.trim()});
+$("#conn").onclick=async()=>{localStorage.gaceta=JSON.stringify({...JSON.parse(localStorage.gaceta||"{}"),o:$("#co").value.trim(),r:$("#cr").value.trim(),b:$("#cb").value.trim(),p:$("#cp").value.trim()||"data/noticias.json",k:$("#ck").value.trim()});
  try{toast("Conectando…");await load();toast("Conectado")}catch(e){toast("Revisa los datos: "+e.message)}};
 addEventListener("beforeunload",e=>{if(dirty&&cur>=0){e.preventDefault()}});
 const c=C();$("#co").value=c.o||"";$("#cr").value=c.r||"";$("#cb").value=c.b||"";$("#cp").value=c.p||"data/noticias.json";$("#adv").open=!c.o;
