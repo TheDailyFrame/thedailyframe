@@ -69,8 +69,8 @@ footer{text-align:center;font-size:12px;color:var(--mute);padding-bottom:40px}
  .nav .pn,.nav span{display:none}.num{display:none}
  .strip{font-size:11px}.strip span{white-space:nowrap}.strip .motto,.strip span:last-child{display:none}
  .meta{flex-wrap:wrap}
- .tools{flex-direction:column;align-items:stretch;gap:12px}.q{width:100%}.srch{flex-direction:column;align-items:stretch;gap:12px}
- .tabs{flex-wrap:nowrap;overflow-x:auto;gap:20px;scrollbar-width:none}.tabs button{white-space:nowrap}
+ .tools{flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:12px}.q{width:100%}.srch{flex-direction:column;align-items:stretch;gap:12px}
+ .tabs{flex-wrap:nowrap;min-width:0;max-width:100%;overflow-x:auto;gap:20px;scrollbar-width:none}.tabs button{white-space:nowrap}
 }
 @media print{
  @page{size:A4 landscape;margin:10mm}
@@ -148,7 +148,7 @@ fetch(DATA+"?t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).catch((
  const months=[...new Set(rest.map(n=>(n.fecha||"").slice(0,7)).filter(Boolean))],mcount={};
  rest.forEach(n=>{const k=(n.fecha||"").slice(0,7);mcount[k]=(mcount[k]||0)+1});
  const ms=$("#mes");
- if(ms){if(months.length>1){
+ if(ms){if(months.length){
   ms.innerHTML=`<option value="">Todos los meses</option>`+months.map(m=>{const t=new Date(m+"-01T12:00").toLocaleDateString("es-ES",{month:"long",year:"numeric"});return `<option value="${m}">${t[0].toUpperCase()+t.slice(1)} (${mcount[m]})</option>`}).join("");
   ms.onchange=()=>{mes=ms.value;build();show(0)};
  }else ms.remove()}
@@ -171,7 +171,7 @@ fetch(DATA+"?t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).catch((
  }
  const parse=()=>{const m=location.hash.match(/^#((?:[^.]+\.)*)p(\d+)$/);let s="",t=null;
   if(m&&m[1])m[1].split(".").filter(Boolean).forEach(x=>{try{x=decodeURIComponent(x)}catch(e){}if(x==="todo"||/^\d{4}-\d{2}$/.test(x))t=x==="todo"?"":x;else s=x});
-  const d=months.length>1?months[0]:"";
+  const d=months.length?months[0]:"";
   return{s:names.includes(s)?s:"",m:(t!==null&&(t===""||months.includes(t)))?t:d,p:m?parseInt(m[2]):0}};
  $("#foot").innerHTML=`${esc(NAME)} · ${new Date().getFullYear()} · <a href="legal.html">Aviso legal y cookies</a> · <a href="rss.xml">RSS</a>`;
  $("#prev").onclick=()=>show(cur-1);$("#next").onclick=()=>show(cur+1);
