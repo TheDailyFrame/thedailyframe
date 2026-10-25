@@ -48,10 +48,21 @@ h1.h{font-weight:900;font-size:clamp(38px,8vw,112px);letter-spacing:-.055em;line
 .pager a small{display:block;font:500 12px var(--f);color:var(--mute);margin-bottom:4px}
 .pager a:last-child{text-align:right}
 .pdf{position:fixed;right:18px;bottom:18px;z-index:5;font:600 14px var(--f);border:0;background:#000;color:#fff;padding:12px 20px;border-radius:999px;cursor:pointer;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.share{margin-left:auto;display:flex;gap:8px}
+.share button{font:600 12px var(--f);border:1px solid var(--ink);background:transparent;color:var(--ink);padding:3px 12px;border-radius:999px;cursor:pointer}
+.share button:hover{background:var(--ink);color:#fff}
+.rel{margin:10px 0 56px}
+.rel .rt{font:800 14px var(--f);letter-spacing:-.01em;border-top:2px solid var(--ink);padding-top:10px;margin-bottom:18px}
+.rg{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.rel a{text-decoration:none;display:block}.rel img{aspect-ratio:16/10}.rel .fr{margin-bottom:12px}
+.rel .k{margin-bottom:8px}
+.rel h3{font-weight:800;font-size:21px;letter-spacing:-.035em;line-height:1.12}
+.rel a:hover h3{text-decoration:underline;text-underline-offset:4px}
 .empty{padding:100px 0;text-align:center;color:var(--mute)}
 a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 @media(max-width:899px){
  body{font-size:17px}.photo img{aspect-ratio:16/10}
+ .rg{grid-template-columns:1fr;gap:30px}
  .sheet{border:0;border-radius:0;box-shadow:none;background:none;margin:20px 0;width:100%;aspect-ratio:auto;container-type:normal;overflow:visible}
  .sheet::after{display:none}
  .in{position:static;padding:0}
@@ -59,7 +70,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset
 }
 @media print{
  @page{size:A4 landscape;margin:10mm}
- body{background:#fff;line-height:1.5}.pdf,.pager,.top a:not(.logo),.warn{display:none}
+ body{background:#fff;line-height:1.5}.pdf,.pager,.rel,.share,.top a:not(.logo),.warn{display:none}
  .wrap{padding:0;max-width:none}
  .head{break-after:page}article{padding:10px 0 0}
  h1.h{font-size:56px!important}.sub{font-size:20px;margin:12px 0 10px}.meta{margin-bottom:12px}.photo img{aspect-ratio:21/6.5}
@@ -130,17 +141,23 @@ fetch(DATA+"?t="+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).catch((
  document.title=n.titulo+" · "+NAME;
 const cl=document.createElement("link");cl.rel="canonical";cl.href=location.origin+location.pathname+"?id="+encodeURIComponent(n.id);document.head.appendChild(cl);
  const words=String(n.cuerpo||"").split(/\s+/).length,prev=all[k+1],next=all[k-1];
+ const rel=[...all.filter(x=>x!==n&&x.seccion===n.seccion),...all.filter(x=>x!==n&&x.seccion!==n.seccion)].slice(0,3);
  o.innerHTML=`<article><div class="head">
   <div class="k">${esc(n.seccion||"Actualidad")}</div>
   <h1 class="h">${esc(n.titulo)}</h1>
   ${n.subtitulo?`<p class="sub">${esc(n.subtitulo)}</p>`:""}
-  <div class="meta"><span>Por <b>${esc(n.autor||"Redacción")}</b></span><span>${fmt(n.fecha)}</span><span>${Math.max(1,Math.round(words/200))} min de lectura</span></div>
+  <div class="meta"><span>Por <b>${esc(n.autor||"Redacción")}</b></span><span>${fmt(n.fecha)}</span><span>${Math.max(1,Math.round(words/200))} min de lectura</span><span class="share"><button type="button" id="cp">Copiar enlace</button>${navigator.share?'<button type="button" id="sh">Compartir</button>':""}</span></div>
   ${n.img?`<div class="photo">${fr(n)}${n.pie?`<div class="cap">${esc(n.pie)}</div>`:""}</div>`:""}
   </div>
   <div class="warn" id="warn"></div>
   <div class="sheet"><div class="in"><div class="body" id="bd">${body(n.cuerpo)}</div></div><span class="pn l">2</span><span class="pn m">${esc(NAME)}</span><span class="pn r">3</span></div>
   <div class="pager">${prev?`<a href="?id=${encodeURIComponent(prev.id)}"><small>Anterior</small>${esc(prev.titulo)}</a>`:"<span></span>"}${next?`<a href="?id=${encodeURIComponent(next.id)}"><small>Siguiente</small>${esc(next.titulo)}</a>`:"<span></span>"}</div>
+  ${rel.length?`<section class="rel"><div class="rt">Sigue leyendo</div><div class="rg">${rel.map(x=>`<a href="?id=${encodeURIComponent(x.id)}">${x.img?fr(x):""}<div class="k">${esc(x.seccion||"Actualidad")}</div><h3>${esc(x.titulo)}</h3></a>`).join("")}</div></section>`:""}
  </article>`;
+ const url=location.origin+location.pathname+"?id="+encodeURIComponent(n.id),cp=document.getElementById("cp"),sh=document.getElementById("sh");
+ cp.onclick=async()=>{try{await navigator.clipboard.writeText(url)}catch(e){const t=document.createElement("textarea");t.value=url;document.body.appendChild(t);t.select();try{document.execCommand("copy")}catch(_){}t.remove()}
+  cp.textContent="Enlace copiado";setTimeout(()=>cp.textContent="Copiar enlace",2000)};
+ if(sh)sh.onclick=()=>navigator.share({title:n.titulo,url}).catch(()=>{});
  fit();addEventListener("resize",fit);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
 });
 </script>
