@@ -1,5 +1,21 @@
 [
  {
+  "id": "limpia-tu-tv-y-tu-firetv-en-unos-sencillos-pasos-tgpl",
+  "titulo": "Limpia tu TV y tu FireTV en unos sencillos pasos.",
+  "subtitulo": "",
+  "seccion": "IA",
+  "autor": "Redactor",
+  "bio": "",
+  "fecha": "2026-11-01",
+  "img": "https://i.blogs.es/76382c/amazon-fire-tv-stick-4k-max/1366_2000.jpg",
+  "pie": "",
+  "portada": true,
+  "cuerpo": "<p>Hace poco conocimos la noticia de que con la IA , podíamos deblotear (quitar aplicaciones preinstaladas) de nuestros TV y aparatos de streaming como el FireTV , Chromecast etc.. (todo aquello que tenga Android como SO principal). La noticia se hizo bastante viral por proyectos que fueron saliendo en Github y decidí probarlo ... ¿Resultado? En menos de 3 minutos tenía el FireTV 4K limpio de telemetría , recomendaciones , anuncios y apps basura al igual que una TV Philips que tenía y a la cual , nunca accedía a su pantalla principal de lo lagueaba que iba y eso que no tenía apenas aplicaciones.</p><p>No lo voy a poner complicado. Activa las opciones de desarrollo en tu FireTV y luego , en la aplicación que te dejaré más abajo , pones la IP de tu Firestick , le das a CLEAN y listo. Ya lo tienes todo listo. Desde la propia aplicación podrás cambiar wallpaper , aplicaciones que están en el menú , el diseño / estilo y algunas opciones más como paralizar las actualizaciones para evitar que no te dejen instalar aplicaciones de tercero en un futuro.</p><p>En el caso de la TV la APP detecta automáticamente cual es la tuya. Le das , aceptas un mensaje para permitir cambios en la TV al igual que te lo pide en el FireTV y a volar... Sin mentiros , he recuperado la fe en estos dos cacharros que han vuelto a la vida por que daban pena de como iban de lagueados. Sin duda el mejor invento que he visto con la IA y del cual nunca me hubiera imaginado que necesitaría... ¿Quitar cosas de una TV y meterle mano? Ni lo había pensado. Siempre fui de los que cambiaban ROM a los móviles y tablet pero nunca hice nada con una TV y mira... Vida nueva. Parece que los acabo de comprar. Es la misma sensación que sentí al pasar de una ROM asquerosamente plagada de apps inutiles e instalar la famosa ROM LineageOS pues igual.&nbsp;</p><p>Os dejo la APP :&nbsp;</p><p>\nPara FireStick y Google Chromecast : <a href=\"https://github.com/sreeego/tv-home-studio/\" target=\"_blank\" rel=\"noopener\">https://github.com/sreeego/tv-home-studio/</a>&nbsp; (Usa la APP móviles para configurarla)\n\n<br>\n<br>\nPara TV con Android : <a href=\"https://github.com/udhaykumarbala/cleanyourtv-app\" target=\"_blank\" rel=\"noopener\">https://github.com/udhaykumarbala/cleanyourtv-app</a>&nbsp;(Usa la APP móviles para configurarla)</p>",
+  "fx": 50,
+  "fy": 50,
+  "fz": 1
+ },
+ {
   "id": "el-anillo-unico-vuelve-a-llamar-a-la-puerta-la-caz-sw30",
   "titulo": "El Anillo Único vuelve a llamar a la puerta: 'La caza de Gollum' resucita la Tierra Media con el fichaje estelar del mago gris.",
   "subtitulo": "Los fans desean volver a ver la esencia de ESDLA trás el fracaso de Los Anillos del Poder.",
@@ -41,7 +57,7 @@
   "fecha": "2026-10-25",
   "img": "https://i.blogs.es/ee7f16/1366_20002/1366_2000.jpeg",
   "pie": "",
-  "portada": true,
+  "portada": false,
   "cuerpo": "<p>Que alguien llame a las oficinas de Apple y Samsung, porque en China acaban de marcarse un jaque mate de manual. Xiaomi ha sacado su nuevo monstruo plegable y la verdad es que la jugada le ha salido redonda. Mientras los de la manzana debutan con su esperadísimo iPhone Duo cobrándote hasta el aire que respiras —rozando tranquilamente la friolera de los 2.000 euros de salida— y los surcoreanos siguen pidiéndote un riñón y medio por el Galaxy Z Fold con cambios a cuentagotas, Xiaomi llega a la mesa, pega un puñetazo y dice: \"sujétame la cobertura\".</p><p>En la mano se siente ridículamente ligero y fino, con unos 219 gramos que dejan al iPhone Duo pareciendo un ladrillo de medio kilo cuando los comparas frente a frente. Pero lo divertido llega en las entrañas. ¿Carga rápida y batería? Xiaomi te mete unos bestiales 6.000 mAh con carga de 67W y 50W inalámbrica. Mientras tanto, en Apple te dan una batería de risa con una carga que parece pensada para que te des una siesta antes de llegar al 100%, y Samsung sigue rascando los 45W como si estuviéramos en 2020.</p><p>Y mejor no hablemos del precio. Por lo que te cuesta la versión básica de los otros dos, con Xiaomi te da para el teléfono, unas vacaciones y un buen puñado de accesorios. Mi humilde opinión como espectador que lleva años sufriendo la \"tasa innovación\" de las grandes marcas: ya era hora de que alguien les bajara los humos con números reales sobre la mesa y no solo con marketing de colores.</p>\n\n",
   "fx": 52,
   "fy": 61,
